@@ -53,6 +53,6 @@ jobs:
           file: ./web/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/my-website:latest
-            ${{ secrets.DOCKER_USERNAME }}/my-website:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/terraform-website:latest
+            ${{ secrets.DOCKER_USERNAME }}/terraform-website:${{ github.sha }}
    
