@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket       = "samz-s3"
     key          = "terraform/terraform.tfstate"
-    region       = var.aws_region
+    region       = eu-north-1
     use_lockfile = true
   }
 }
