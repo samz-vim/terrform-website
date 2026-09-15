@@ -22,10 +22,6 @@ jobs:
       github.event.workflow_run.conclusion == 'success'
 
     steps:
-      - name: Download Terraform output
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-output
             
       - name: Read EC2 IP
         id: ec2
