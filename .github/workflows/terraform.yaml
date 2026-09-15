@@ -55,11 +55,16 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
 
-      - name: Get EC2 Public IP
-        id: ec2
+      - name: Get and Debug EC2 IP
+        id: tf_output
         run: |
           INSTANCE_IP=$(terraform output -raw instance_public_ip)
-          echo "EC2 IP: $INSTANCE_IP"
+      
+          echo "================================="
+          echo "Terraform EC2 IP:"
+          echo "$INSTANCE_IP"
+          echo "================================="
+      
           echo "instance_ip=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
 
       - name: Trigger CI
@@ -68,6 +73,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: terraform-complete
           client-payload: '{"ec2_ip":"${{ steps.ec2.outputs.instance_ip }}"}'
+          
+      - name: Check EC2 IP
+        run: |
+         echo "EC2 IP: ${{ github.event.client_payload.ec2_ip }}"
 
       - name: Terraform Output
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
