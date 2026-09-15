@@ -1181,3 +1181,4 @@ DevOps & Cloud Engineering Enthusiast
 The goal of this project is to demonstrate how modern DevOps practices can automate the complete software delivery lifecycle — from **code commit to a running application in the cloud**.
 
 Instead of manually building Docker images, pushing them to a registry, connecting to the server, stopping containers, and starting new ones, the entire process is automated using **GitHub Actions, Docker, Docker Hub, and AWS EC2**.
+# terrform-website
