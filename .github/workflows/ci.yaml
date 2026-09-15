@@ -4,6 +4,8 @@
 name: CI
 
 on:
+  repository_dispatch:
+    types: [terraform-complete]
   workflow_run:
     workflows: ["TF"]
     types:
@@ -55,4 +57,9 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/terraform-website:latest
             ${{ secrets.DOCKER_USERNAME }}/terraform-website:${{ github.sha }}
-   
+      - name: Trigger CD
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: ci-complete
+          client-payload: '{"ec2_ip":"${{ github.event.client_payload.ec2_ip }}"}'
