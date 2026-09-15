@@ -52,6 +52,16 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
 
+      - name: Get EC2 Public IP
+        id: tf_output
+        run: |
+          INSTANCE_IP=$(terraform output -raw instance_public_ip)
+          echo "instance_ip=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
+
+      - name: Display EC2 IP
+        run: |
+          echo "EC2 Public IP: ${{ steps.tf_output.outputs.instance_ip }}"
+
       - name: Terraform Output
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform output
