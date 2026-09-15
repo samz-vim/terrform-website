@@ -1,6 +1,8 @@
 name: CD 
 
 on:
+  repository_dispatch:
+    types: [ci-complete]
   workflow_run:
     workflows: ["CI"]
     types:
@@ -37,18 +39,29 @@ jobs:
           chmod 600 ~/.ssh/ec2_key
 
       - name: Deploy to EC2
+        env:
+          EC2_IP: ${{ github.event.client_payload.ec2_ip }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
+          mkdir -p ~/.ssh
+      
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+      
+          echo "Deploying to $EC2_IP"
+      
           ssh -o StrictHostKeyChecking=no \
             -i ~/.ssh/ec2_key \
-            ${{ secrets.EC2_USER }}@$EC2_IP \
-            "docker pull ${{ secrets.DOCKER_USERNAME }}/my-website:latest &&
-             docker stop terraform-website || true &&
-             docker rm terraform-website || true &&
+            $EC2_USER@$EC2_IP \
+            "docker pull $DOCKER_USERNAME/my-website:latest && \
+             docker stop my-website || true && \
+             docker rm my-website || true && \
              docker run -d \
-               --name my-website \
-               -p 80:80 \
-               ${{ secrets.DOCKER_USERNAME }}/terraform-website:latest"
-    
+             --name my-website \
+             -p 80:80 \
+             $DOCKER_USERNAME/my-website:latest"
+          
             echo "================================="
             echo "Deployment completed successfully"
             echo "================================="
