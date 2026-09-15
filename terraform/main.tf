@@ -1,3 +1,14 @@
+
+  backend "s3" {
+    bucket       = "samuel-terraform-state-2026"
+    key          = "terraform/terraform.tfstate"
+    region       = "YOUR_AWS_REGION"
+    use_lockfile = true
+  }
+}
+
+
+
 # -------------------------
 # VPC
 # -------------------------
