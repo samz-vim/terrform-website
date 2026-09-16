@@ -1,11 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket       = "samz-s3"
-    key          = "terraform/terraform.tfstate"
-    region       = "eu-north-1"
-    use_lockfile = true
-  }
-}
 
 # -------------------------
 # VPC
