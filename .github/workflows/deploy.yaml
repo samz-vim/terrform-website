@@ -36,6 +36,19 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
+    - name: Find Terraform files
+      run: |
+        echo "Current directory:"
+        pwd
+    
+        echo ""
+        echo "Files in repository:"
+        find . -maxdepth 4 -type f | sort
+    
+        echo ""
+        echo "Terraform files:"
+        find . -name "*.tf" -type f
+
     - name: Verify Terraform Provider
       run: |
         echo "Terraform version:"
