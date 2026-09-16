@@ -36,20 +36,15 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Find Terraform files
+    - name: Terraform Init
+      working-directory: ./terraform
       run: |
-        echo "Current directory:"
-        pwd
-    
-        echo ""
-        echo "Files in repository:"
-        find . -maxdepth 4 -type f | sort
-    
-        echo ""
-        echo "Terraform files:"
-        find . -name "*.tf" -type f
+        rm -rf .terraform
+        terraform init -upgrade -reconfigure \
+          -backend-config="region=${{ secrets.AWS_REGION }}"
 
     - name: Verify Terraform Provider
+      working-directory: ./terraform
       run: |
         echo "Terraform version:"
         terraform version
@@ -57,17 +52,6 @@ jobs:
         echo ""
         echo "Installed providers:"
         terraform providers
-    
-        echo ""
-        echo "Provider files:"
-        find .terraform/providers -type f | head -50
-
-    - name: Terraform Init
-      working-directory: ./terraform
-      run: |
-        rm -rf .terraform
-        terraform init -upgrade -reconfigure \
-          -backend-config="region=${{ secrets.AWS_REGION }}"
     
     - name: Get EC2 IP
       working-directory: ./terraform
@@ -82,11 +66,12 @@ jobs:
         echo "================================="
     
         echo "EC2_IP=$EC2_IP" >> "$GITHUB_ENV"
-        - name: Configure SSH
-          run: |
-            mkdir -p ~/.ssh
-            echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/ec2_key
-            chmod 600 ~/.ssh/ec2_key
+        
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/ec2_key
+        chmod 600 ~/.ssh/ec2_key
 
     - name: Deploy to EC2
       env:
