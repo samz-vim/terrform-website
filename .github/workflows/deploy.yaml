@@ -35,9 +35,23 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
+    - name: Verify Terraform Provider
+      run: |
+        echo "Terraform version:"
+        terraform version
+    
+        echo ""
+        echo "Installed providers:"
+        terraform providers
+    
+        echo ""
+        echo "Provider files:"
+        find .terraform/providers -type f | head -50
+
     - name: Terraform Init
       run: |
-        terraform init -reconfigure \
+        rm -rf .terraform
+        terraform init -upgrade -reconfigure \
           -backend-config="region=${{ secrets.AWS_REGION }}"
 
     - name: Get EC2 IP
